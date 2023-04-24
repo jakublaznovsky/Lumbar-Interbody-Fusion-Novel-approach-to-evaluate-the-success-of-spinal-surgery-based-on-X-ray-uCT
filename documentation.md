@@ -37,7 +37,7 @@ The algorithm is located in the folder "Main"
 
 **-mia_bresenham.m** Supportive function to convex_or_concave.m. Function creates a line beetween two point based on bresenham  algorithm.
 
-**More description is provided in individual code files.
+** More description is provided in individual code files.
 
 ## Testing dataset:
 Available here: Data/Link_to_repository.url
