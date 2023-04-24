@@ -1,2 +1,2 @@
-Abstract
+# Abstract
 Spinal fusion is a surgical procedure used to join two or more vertebrae to prevent movement between them. This surgical procedure is considered in patients suffering from a wide range of degenerative spinal diseases 
