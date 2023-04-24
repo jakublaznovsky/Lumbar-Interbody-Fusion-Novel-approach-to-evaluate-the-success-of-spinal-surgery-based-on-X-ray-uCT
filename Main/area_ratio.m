@@ -1,4 +1,4 @@
-function [final_stack,area,fusion] = vypocet_plochy_v9(Ld)
+function [final_stack,area,fusion] = area_ratio(Ld)
 
 %load('7A8_Ld_new_methodology.mat');
 %Ld=flip(Ld,1);
@@ -22,7 +22,7 @@ function [final_stack,area,fusion] = vypocet_plochy_v9(Ld)
 %     end
 % end
 
-%% ořezání datasetu
+%% dataset cropping
 % Ld_cropped=zeros(size(Ld_normal,1),size(Ld_normal,2));
 % 
 % for i=1:size(Ld_normal,3)
@@ -32,7 +32,7 @@ function [final_stack,area,fusion] = vypocet_plochy_v9(Ld)
 % end
 % Ld_cropped(:,:,1)=[]; 
 
-%% detekce spojení
+%% fusion detection
 p=1
 for i=2:size(Ld_cropped,1)-1
     for j=2:size(Ld_cropped,2)-1
@@ -58,7 +58,7 @@ end
 
        
         
-%% nahrazení místa spojení nulami a detekce obratlů
+%% replacing the connection point with zeros and vertebrae detection
 final_stack=zeros(size(Ld_cropped,1),size(Ld_cropped,2));
 
 obratle_bez_fuze=zeros(size(Ld_cropped));
@@ -69,15 +69,15 @@ obratel2=zeros(size(Ld_cropped));
 for i=1:size(obratle_bez_fuze,1)
     for j=1:size(obratle_bez_fuze,2)
         for k=1:size(obratle_bez_fuze,3)
-            if Ld_cropped(i,j,k)~=3 %extrakce obou obratlů do nové proměnné - bez míst fůze. Samotná místa fúze jdou do další proměnné
+            if Ld_cropped(i,j,k)~=3 %extraction of both vertebrae into a new variable - without fusion sites. The fusion sites themselves go into another variable
                 obratle_bez_fuze(i,j,k)=Ld_cropped(i,j,k);
             else
-                fuze(i,j,k)=3; %zachování míst fúze pro budoucí použití
+                fuze(i,j,k)=3; %preservation of fusion sites for future use
             end
             if Ld_cropped(i,j,k)==1
-                obratel1(i,j,k)=1;%obratle_bez_fuze(i,j,k); %extrakce obratle 1
+                obratel1(i,j,k)=1;%obratle_bez_fuze(i,j,k); %vertebral extraction 1
             elseif Ld_cropped(i,j,k)==2
-                obratel2(i,j,k)=1;%obratle_bez_fuze(i,j,k); %extrakce obratle 2
+                obratel2(i,j,k)=1;%obratle_bez_fuze(i,j,k); %vertebral extraction 2
             end
         end
     end
@@ -100,7 +100,7 @@ for i=2:size(obr_closed,1)-1
         for k=2:size(obr_closed,3)-1
             pom=obr_closed(i-1:i+1,j-1:j+1,k-1:k+1);
             if sum(unique(pom(mask==1)))==3
-                obr_closed_boundary(i,j,k)=3; %označí trojkou hraniční px
+                obr_closed_boundary(i,j,k)=3; %marks adjecent px with 3
             end
         end
     end
@@ -131,24 +131,24 @@ for k=2:size(obr_closed_boundary,3)-1
 upperRows=zeros(size(obr_closed_boundary,1),1);
 for column = 1 : columns
     thisColumn = obr_closed_boundary(:,column,k);
-    row = find(thisColumn==3, 1, 'first'); %označuje sloupec na kterém se vyskytuje hranice
+    row = find(thisColumn==3, 1, 'first'); %indicates the column on which the boundary occurs
     if ~isempty(row)
         upperRows(column) = row; 
     end
 end
-first=find(upperRows,1,'first');%nalezení sloupce ve kterém se začne hledat hranice
-last=find(upperRows,1,'last');%nalezení sloupce ve kterém se začne hledat hranice z druhé strany
+first=find(upperRows,1,'first');%finding the column in which to start looking for the boundary
+last=find(upperRows,1,'last');%finding the column in which to start looking for the border from the other side
 coef=round((last-first)/10);
 first=first+coef;
 last=last-coef;
 
 no=nnz(upperRows)-coef; %number of boundary pixels
-% označení hraničních px indexem 2
+% marking adjecent pixels with 2
 
 pp=1;
 firsta=first;
 while pp==1
-    obratel1_row=find(obratel1(:,firsta,k),1,'first'); %nalezení řádku ve kterém se začne hledat hranice
+    obratel1_row=find(obratel1(:,firsta,k),1,'first'); %finding the line in which to start looking for the border
     if isempty(obratel1_row)
         firsta=firsta+1;
     else
@@ -167,7 +167,7 @@ end
 pp=1;
 firstb=first;
 while pp==1
-    obratel2_row=find(obratel2(:,firstb,k),1,'last'); %nalezení řádku ve kterém se začne hledat hranice z druhé strany
+    obratel2_row=find(obratel2(:,firstb,k),1,'last'); %finding a line in which to start looking for the border from the other side
     if isempty(obratel2_row)
         firstb=firstb+1;
     else
@@ -186,7 +186,7 @@ end
 pp=1;
 lasta=last;
 while pp==1
-    obratel1_row2=find(obratel1(:,lasta,k),1,'first'); %nalezení řádku ve kterém se začne hledat hranice
+    obratel1_row2=find(obratel1(:,lasta,k),1,'first'); %finding the line in which to start looking for the boundary
     if isempty(obratel1_row2)
         lasta=lasta-1;
     else
@@ -205,7 +205,7 @@ end
 pp=1;
 lastb=last;
 while pp==1
-    obratel2_row2=find(obratel2(:,lastb,k),1,'last'); %nalezení řádku ve kterém se začne hledat hranice z druhé strany
+    obratel2_row2=find(obratel2(:,lastb,k),1,'last'); %finding the line in which to start looking for the border from the other side
     if isempty(obratel2_row2)
         lastb=lastb-1;
     else        
@@ -224,7 +224,7 @@ end
 end
 
 
-obratle_hranice=obratel1_hranice+obratel2_hranice; %označené hranice na obou obratlích
+obratle_hranice=obratel1_hranice+obratel2_hranice; %marked borders on both vertebrae
 
 %odstraneni hranicnich px ze samostatnych objektu (artefakty)
 obratle_hranice_pom=obratle_hranice;
@@ -256,20 +256,7 @@ fusion=sum(sum(sum(final_stack==3)))
 
 
 end
-% % 
-% f=final_stack;
-% 
-% 
-% for i=1:size(f,1)
-%     for j=1:620%size(f,2)-1
-%         for k=413:540
-%             if f(i,j,k)==2
-%                 f(i,j,k)=1;            
-%             end
-%         end
-%     end
-% end
-%
+
 
 
 
