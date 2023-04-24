@@ -102,13 +102,6 @@ for i=1:length(unique_values)
 end
 unique_values = unique(Ld);
 
-% Ld_gray = Ld;   %% just for displaying results
-% vector = floor(linspace(0,230,length(unique(Ld))));
-% for i = 2:length(unique(Ld))
-%     Ld_gray(Ld_gray==unique_values(i)) = vector(i);
-% end
-% Ld_gray(Ld_gray==0)=255;
-
 disp('automated watershed done')
 
 %% remove processes
