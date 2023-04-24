@@ -6,6 +6,7 @@ Many novel biomaterials are recently investigated for use in spinal fusion surge
   
 
 ![2C16 - Copy2](https://user-images.githubusercontent.com/41157503/234028034-993c98f4-bdf2-45ee-a958-9bded2b10dbc.png)
+
 Figure: X-ray micro CT measurement of two fused pig vertebrae. Red: Vertebral body area (expanded and depicted in red for visualization). Green: Detected area of vertebral fusion.
 
 
